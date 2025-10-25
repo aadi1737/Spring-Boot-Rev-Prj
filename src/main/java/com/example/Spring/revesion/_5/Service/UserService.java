@@ -6,6 +6,7 @@ import com.example.Spring.revesion._5.DTOs.UserUpdateRequestDTO;
 import com.example.Spring.revesion._5.Model.USER;
 import com.example.Spring.revesion._5.Repository.UserRepository;
 import org.bson.types.ObjectId;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,18 +19,16 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ModelMapper mapper;
+
     public List<UserResponseDTO> getAllUser(){
 
         List<USER> all = userRepository.findAll();
         List<UserResponseDTO> dtoList = new ArrayList<>();
 
         for(USER u :all){
-            UserResponseDTO dto = new UserResponseDTO();
-            dto.setName(u.getName());
-            dto.setUsername(u.getUsername());
-            dto.setAge(u.getAge());
-            dto.setId(u.getId().toString());
-
+            UserResponseDTO dto = mapper.map(u, UserResponseDTO.class);
             dtoList.add(dto);
         }
 
@@ -42,11 +41,13 @@ public class UserService {
             USER user = userRepository.findById(objectId).orElse(null);
             if (user==null)
                 return null;
-            UserResponseDTO dto = new UserResponseDTO();
-            dto.setUsername(user.getUsername());
-            dto.setAge(user.getAge());
-            dto.setName(user.getName());
-            dto.setId(user.getId().toString());
+//            UserResponseDTO dto = new UserResponseDTO();
+//            dto.setUsername(user.getUsername());
+//            dto.setAge(user.getAge());
+//            dto.setName(user.getName());
+//            dto.setId(user.getId().toString());
+        //We Will use Model Paper (❁´◡`❁)
+            UserResponseDTO dto = mapper.map(user, UserResponseDTO.class);
 
 //            System.out.println(dto);
             return dto;
@@ -57,11 +58,7 @@ public class UserService {
 
 
     public UserResponseDTO createUser(UserRequestDTO dto){
-        USER user = new USER();
-        user.setAge(dto.getAge());
-        user.setUsername(dto.getUsername());
-        user.setName(dto.getName());
-        user.setPassword(dto.getPassword());
+        USER user = mapper.map(dto, USER.class);
 
         userRepository.save(user);
 
@@ -80,11 +77,7 @@ public class UserService {
         // save will update existing because ID exists
         userRepository.save(user);
 
-        UserResponseDTO responseDTO = new UserResponseDTO();
-        responseDTO.setUsername(user.getUsername());
-        responseDTO.setName(user.getName());
-        responseDTO.setAge(user.getAge());
-        responseDTO.setId(user.getId().toString());
+        UserResponseDTO responseDTO = mapper.map(user, UserResponseDTO.class);
         return responseDTO;
     }
 

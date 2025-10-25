@@ -6,8 +6,10 @@ import com.example.Spring.revesion._5.DTOs.UserUpdateRequestDTO;
 import com.example.Spring.revesion._5.Model.USER;
 import com.example.Spring.revesion._5.Repository.UserRepository;
 import com.example.Spring.revesion._5.Service.UserService;
+import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +40,7 @@ public class UserController {
     }
 
     @GetMapping("/get-user/{id}")
-    public ResponseEntity<?> getUser(@PathVariable String id){
+    public ResponseEntity<?> getUser(@Valid @PathVariable String id){
 
         UserResponseDTO userFromId = userService.getUserFromId(id);
 //        System.out.println(userFromId);
@@ -51,7 +53,7 @@ public class UserController {
 
 
     @PostMapping("/add-user")
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO dto){
+    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO dto){
         UserResponseDTO user = userService.createUser(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
