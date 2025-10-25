@@ -6,6 +6,7 @@ import com.example.Spring.revesion._5.DTOs.UserUpdateRequestDTO;
 import com.example.Spring.revesion._5.Model.USER;
 import com.example.Spring.revesion._5.Repository.UserRepository;
 import com.example.Spring.revesion._5.Service.UserService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +37,10 @@ public class UserController {
         return ResponseEntity.ok(allUser);
     }
 
-    @GetMapping("/get-user/{userId}")
-    public ResponseEntity<?> getUser(@PathVariable String userId){
+    @GetMapping("/get-user/{id}")
+    public ResponseEntity<?> getUser(@PathVariable String id){
 
-        UserResponseDTO userFromId = userService.getUserFromId(userId);
+        UserResponseDTO userFromId = userService.getUserFromId(id);
 //        System.out.println(userFromId);
         if(userFromId==null)
             return new ResponseEntity<>("Can't find User", HttpStatus.NOT_FOUND);
@@ -60,19 +61,21 @@ public class UserController {
 
     @PutMapping("/update-user")
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequestDTO dto){
-        USER user = userRepository.findByUserId(dto.getUserId());
+        ObjectId objectId = new ObjectId(String.valueOf(dto.getId()));
+        USER user = userRepository.findById(objectId).orElse(null);
         if(user==null)
-            return new ResponseEntity<>("can't Find User with this "+dto.getUserId()+"UseId",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("can't Find User with this "+dto.getId()+"User Id",HttpStatus.NOT_FOUND);
         else {
             UserResponseDTO responseDTO = userService.updateUserFromUserId(user, dto);
             return new ResponseEntity<>(responseDTO,HttpStatus.ACCEPTED);
         }
     }
 
-    @DeleteMapping("/del-user/{userId}")
-    public ResponseEntity<?> deleteUser(@PathVariable String userId){
+    @DeleteMapping("/del-user/{id}")
+    public ResponseEntity<?> deleteUser(@PathVariable String id){
         try {
-            userRepository.deleteById(userId);
+            ObjectId objectId = new ObjectId(id);
+            userRepository.deleteById(objectId);
             return new ResponseEntity<>("Successfully Deleted From DB!",HttpStatus.OK);
         } catch (Exception e) {
             throw new RuntimeException(e);

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Data
@@ -12,8 +13,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Builder
 @Document(collection = "User-Rev-2025")
 public class USER {
-
-    private String userId;
+    private ObjectId id;
+    private String username;
     private String name;
     private String  password;
     private int age;

@@ -5,6 +5,7 @@ import com.example.Spring.revesion._5.DTOs.UserResponseDTO;
 import com.example.Spring.revesion._5.DTOs.UserUpdateRequestDTO;
 import com.example.Spring.revesion._5.Model.USER;
 import com.example.Spring.revesion._5.Repository.UserRepository;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +26,9 @@ public class UserService {
         for(USER u :all){
             UserResponseDTO dto = new UserResponseDTO();
             dto.setName(u.getName());
-            dto.setUserId(u.getUserId());
+            dto.setUsername(u.getUsername());
             dto.setAge(u.getAge());
+            dto.setId(u.getId());
 
             dtoList.add(dto);
         }
@@ -36,13 +38,15 @@ public class UserService {
 
     public UserResponseDTO getUserFromId(String id){
         try {
-            USER user = userRepository.findByUserId(id);
+            ObjectId objectId = new ObjectId(id);
+            USER user = userRepository.findById(objectId).orElse(null);
             if (user==null)
                 return null;
             UserResponseDTO dto = new UserResponseDTO();
-            dto.setUserId(user.getUserId());
+            dto.setUsername(user.getUsername());
             dto.setAge(user.getAge());
             dto.setName(user.getName());
+            dto.setId(user.getId());
 
 //            System.out.println(dto);
             return dto;
@@ -55,13 +59,13 @@ public class UserService {
     public UserResponseDTO createUser(UserRequestDTO dto){
         USER user = new USER();
         user.setAge(dto.getAge());
-        user.setUserId(dto.getUserId());
+        user.setUsername(dto.getUsername());
         user.setName(dto.getName());
         user.setPassword(dto.getPassword());
 
         userRepository.save(user);
 
-        return new UserResponseDTO(user.getUserId(), user.getName(), user.getAge());
+        return new UserResponseDTO(user.getId(),user.getUsername(), user.getName(), user.getAge());
     }
 
 
@@ -69,7 +73,7 @@ public class UserService {
         if(user == null){
             throw new IllegalArgumentException("User not found for update");
         }
-
+        user.setUsername(dto.getUsername());
         user.setName(dto.getName());
         user.setAge(dto.getAge());
 
@@ -77,9 +81,10 @@ public class UserService {
         userRepository.save(user);
 
         UserResponseDTO responseDTO = new UserResponseDTO();
-        responseDTO.setUserId(user.getUserId());
+        responseDTO.setUsername(user.getUsername());
         responseDTO.setName(user.getName());
         responseDTO.setAge(user.getAge());
+        responseDTO.setId(user.getId());
         return responseDTO;
     }
 
