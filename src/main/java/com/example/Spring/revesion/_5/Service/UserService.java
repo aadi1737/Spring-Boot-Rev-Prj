@@ -28,7 +28,7 @@ public class UserService {
             dto.setName(u.getName());
             dto.setUsername(u.getUsername());
             dto.setAge(u.getAge());
-            dto.setId(u.getId());
+            dto.setId(u.getId().toString());
 
             dtoList.add(dto);
         }
@@ -46,7 +46,7 @@ public class UserService {
             dto.setUsername(user.getUsername());
             dto.setAge(user.getAge());
             dto.setName(user.getName());
-            dto.setId(user.getId());
+            dto.setId(user.getId().toString());
 
 //            System.out.println(dto);
             return dto;
@@ -65,7 +65,7 @@ public class UserService {
 
         userRepository.save(user);
 
-        return new UserResponseDTO(user.getId(),user.getUsername(), user.getName(), user.getAge());
+        return new UserResponseDTO(user.getId().toString(),user.getUsername(), user.getName(), user.getAge());
     }
 
 
@@ -84,7 +84,7 @@ public class UserService {
         responseDTO.setUsername(user.getUsername());
         responseDTO.setName(user.getName());
         responseDTO.setAge(user.getAge());
-        responseDTO.setId(user.getId());
+        responseDTO.setId(user.getId().toString());
         return responseDTO;
     }
 
