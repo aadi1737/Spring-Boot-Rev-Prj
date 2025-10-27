@@ -12,11 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class UserController {
@@ -53,9 +52,17 @@ public class UserController {
 
 
     @PostMapping("/add-user")
-    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO dto){
-        UserResponseDTO user = userService.createUser(dto);
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDTO dto){
 
+        //Binding Result Code It handle validation exceptions
+//        if (result.hasErrors()){
+//            Map<String, String> errors = new HashMap<>();
+//            result.getFieldErrors().forEach(error ->
+//                    errors.put(error.getField(), error.getDefaultMessage())
+//            );
+//            return ResponseEntity.badRequest().body(errors);
+//        }
+        UserResponseDTO user = userService.createUser(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
